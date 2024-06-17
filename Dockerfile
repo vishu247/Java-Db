@@ -1,15 +1,16 @@
-# Use the official MySQL Docker image
-FROM mysql:latest
+FROM alpine:3.5
 
-# Set the MySQL root password (replace with your desired password)
-ENV MYSQL_ROOT_PASSWORD=@YourRootPassword
+MAINTAINER batlley
 
-# Set a non-root user and password (replace with your desired username and password)
-ENV MYSQL_USER=dbuser
-ENV MYSQL_PASSWORD=@YourPassword#
+WORKDIR /data
 
-# (Optional) Create a new database (replace with your desired database name)
-ENV MYSQL_DATABASE=store_database
+COPY startup.sh /startup.sh
 
-# Expose the MySQL port
+RUN apk add --no-cache bash mysql mysql-client \
+    && rm -rf /var/cache/apk/*
+
+COPY my.cnf /etc/mysql/my.cnf
+
 EXPOSE 3306
+
+CMD ["/startup.sh"]
